@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Professional Title -->
+    <title>NexGen Store - Modern Tech & Design Ecommerce Demo</title>
+    <!-- Tailwind CSS Script -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Customization for a high-contrast dark theme with a vibrant accent -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-dark': '#111827', // Gehra Siyahi (Dark Blue/Grey)
+                        'accent-blue': '#3b82f6', // Chamakdar Neela (Vibrant Blue)
+                        'soft-gray': '#e5e7eb', // Halka Gray (Light Off-White)
+                        'dark-bg': '#1f2937', // Thora halke background ke liye
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'], // Professional font
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* General Styling */
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* VIP Hero Background Effect */
+        .hero-bg {
+            background-image: url('https://plus.unsplash.com/premium_photo-1677995700941-100976883af7?q=80&w=1223&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/1200x600/1f2937/ffffff?text=Professional+Tech+Showcase');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* Accent Button Effects */
+        .btn-accent {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+        }
+        .btn-accent:hover {
+            box-shadow: 0 8px 30px rgba(59, 130, 246, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Modal Background Blur Effect */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+
+<body class="bg-primary-dark text-soft-gray antialiased">
+    
+    <!-- Header/Navigation Bar -->
+    <header class="bg-dark-bg shadow-xl sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+               <div class="flex-shrink-0">
+    <a href="#home" class="flex items-center space-x-2 text-2xl font-extrabold tracking-tight text-white hover:text-accent-blue transition duration-200">
+        <!-- Modern, Minimalist Tech Icon (Inline SVG) -->
+        <svg class="w-7 h-7 text-accent-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- Icon representing a central hub or nexus (Next-Gen Tech) -->
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <span>NexGen Store</span>
+    </a>
+</div>
+
+                <!-- Desktop Navigation and Search (Search system here) -->
+                <div class="flex items-center space-x-6">
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="index.html" class="text-soft-gray hover:text-accent-blue transition duration-150">Home</a>
+                        <a href="#products" class="text-soft-gray hover:text-accent-blue transition duration-150">Products</a>
+                        <a href="#" class="text-soft-gray hover:text-accent-blue transition duration-150">About</a>
+                        <a href="#" class="text-soft-gray hover:text-accent-blue transition duration-150">Contact</a>
+                    </nav>
+
+                    <div class="hidden md:block relative">
+                        <input type="text" id="search-input" placeholder="Search products..." class="bg-gray-700 text-white p-2 pl-10 rounded-full w-48 focus:w-64 transition-all duration-300 border border-gray-600 focus:border-accent-blue" onkeyup="filterProducts()">
+                        <!-- Search Icon -->
+                        <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </div>
+
+                <!-- Icons & Mobile Menu Button -->
+                <div class="flex items-center space-x-4">
+                    <button id="cart-btn" onclick="toggleCartModal(true)" class="p-2 rounded-full text-soft-gray hover:bg-gray-700 relative">
+                        <!-- Shopping Cart Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">0</span>
+                    </button>
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-md text-soft-gray hover:text-white hover:bg-gray-700 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <input type="text" id="search-input-mobile" placeholder="Search products..." class="bg-gray-700 text-white p-2 rounded-md w-full mb-3 border border-gray-600 focus:border-accent-blue" onkeyup="filterProducts()">
+                <a href="index.html" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-800">Home</a>
+                <a href="#products" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Products</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">About</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section (High Impact Look) -->
+        <section class="hero-bg py-24 sm:py-32 rounded-b-lg shadow-xl">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+               <h1 class="text-5xl sm:text-7xl font-extrabold text-white leading-tight mb-4">
+    Future is Now. <span class="text-red-500 block sm:inline">Smart Living.</span>
+</h1>
+
+
+               <p class="text-xl sm:text-2xl font-bold text-black mb-10 max-w-3xl mx-auto">
+    Your Next Tech Discovery: Experience Cutting-Edge Design and Powerful Performance.
+</p>
+
+                <!-- CTA Button triggers Login/Signup Modal -->
+                <button onclick="toggleAuthModal(true)" class="btn-accent inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-accent-blue hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+                    Get Started Now (Login/Signup)
+                </button>
+            </div>
+        </section>
+
+        <!-- Product Section (Product Grid) -->
+        <section id="products" class="py-16 sm:py-24">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-center mb-12 text-white">Our Exclusive Gadgets</h2>
+                
+                <!-- Products Grid - Initially shows 4, or all if 'View All' is clicked -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="product-list">
+                    <!-- Products will be dynamically added here by JavaScript -->
+                </div>
+                <!-- End Products Grid -->
+
+                <div class="text-center mt-16" id="view-all-container">
+                    <!-- Button to show all products -->
+                    <button id="view-all-btn" onclick="showAllProducts()" class="btn-accent inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 md:py-4 md:text-lg md:px-10">
+                        View All Products
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section (Trust Building) -->
+        <section class="bg-gray-900 py-16">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Trusted by 10,000+ Customers</h2>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                   We guarantee superior quality and rapid delivery. Place your order today.
+                </p>
+                <button onclick="toggleAuthModal(true)" class="btn-accent inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-accent-blue hover:bg-blue-700">
+                    Get Started Now
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">NexGen</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-accent-blue transition duration-150">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent-blue transition duration-150">Careers</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-accent-blue transition duration-150">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent-blue transition duration-150">Shipping</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-white mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-accent-blue transition duration-150">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-accent-blue transition duration-150">Terms of Use</a></li>
+                    </ul>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <h4 class="text-xl font-semibold text-white mb-4">Join Our Newsletter</h4>
+                    <form onsubmit="event.preventDefault(); showMessageBox('Newsletter subscription successful! (Dummy)', 'success');" class="flex">
+                        <input type="email" placeholder="Apna Email" class="bg-gray-700 text-white p-3 rounded-l-lg w-full focus:ring-accent-blue focus:border-accent-blue" required>
+                        <button type="submit" class="bg-accent-blue text-white p-3 rounded-r-lg hover:bg-blue-700 transition duration-150">Join</button>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-10 text-center text-gray-500 border-t border-gray-800 pt-6">
+                &copy; 2024 NexGen Store. Powered by Modern Design.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 
+    ======================================
+    VIP MODALS (Login/Signup & Cart)
+    ====================================== 
+    -->
+
+    <!-- Cart Modal (VIP Look) -->
+    <div id="cart-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay">
+        <div class="bg-dark-bg w-full max-w-4xl max-h-[90vh] rounded-xl shadow-2xl p-6 md:p-10 transform transition-all overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
+                <h2 class="text-3xl font-bold text-white">Your Shopping Cart</h2>
+                <button onclick="toggleCartModal(false)" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Cart Items List (2/3 width) -->
+                <div class="md:col-span-2 space-y-4" id="cart-items-container">
+                    <!-- Items will be injected here -->
+                    <p class="text-center text-gray-500 py-10" id="empty-cart-message">Your cart is empty.</p>
+                </div>
+
+                <!-- Summary & Checkout (1/3 width) -->
+                <div class="md:col-span-1 bg-gray-800 p-6 rounded-lg shadow-inner">
+                    <h3 class="text-2xl font-semibold text-white mb-4 border-b border-gray-700 pb-2">Order Summary</h3>
+                    
+                    <div class="space-y-3 mb-6">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal (<span id="summary-count">0</span> items)</span>
+                            <span id="summary-subtotal" class="font-semibold text-soft-gray">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Shipping (Dummy)</span>
+                            <span class="font-semibold text-green-500">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-2xl font-bold pt-2 border-t border-gray-700">
+                            <span>Total</span>
+                            <span id="summary-total" class="text-accent-blue">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Dummy Address/Shipping Info -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-white mb-2">Shipping Address (Demo)</h4>
+                        <p class="text-gray-400">Name: Ali Khan</p>
+                        <p class="text-gray-400">Address: House #123, Street 5, Sukkur, Sindh, Pakistan</p>
+                        <p class="text-gray-400">Service: Express Delivery (3-5 days)</p>
+                    </div>
+
+                    <button class="w-full btn-accent bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg text-xl font-bold" onclick="showMessageBox('Checkout functionality needs backend. This is a VIP Demo!', 'info')">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Auth Modal (Login/Signup Form) -->
+    <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay">
+        <div class="bg-dark-bg w-full max-w-md rounded-xl shadow-2xl p-8 transform transition-all">
+            <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
+                <h2 class="text-3xl font-bold text-white" id="auth-title">Login to Dashboard</h2>
+                <button onclick="toggleAuthModal(false)" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+            </div>
+            
+            <!-- Tab Buttons -->
+            <div class="flex space-x-4 mb-6">
+                <button onclick="showAuthForm('login')" class="auth-tab text-lg font-semibold pb-1 border-b-2 border-accent-blue text-accent-blue" id="login-tab">Login</button>
+                <button onclick="showAuthForm('signup')" class="auth-tab text-lg font-semibold pb-1 border-b-2 border-transparent text-gray-400 hover:text-white" id="signup-tab">Signup</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-6" onsubmit="event.preventDefault(); handleLogin();">
+                <div>
+                    <label for="login-email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                    <input type="email" id="login-email" required class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-accent-blue focus:border-accent-blue transition duration-150">
+                </div>
+                <div>
+                    <label for="login-password" class="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                    <input type="password" id="login-password" required class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-accent-blue focus:border-accent-blue transition duration-150">
+                </div>
+                <button type="submit" class="w-full btn-accent bg-accent-blue hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-bold">
+                    Login Now
+                </button>
+                <p class="text-center text-gray-400 text-sm">Forgot password? <a href="#" class="text-accent-blue hover:underline">Reset here</a></p>
+            </form>
+
+            <!-- Signup Form (Hidden by default) -->
+            <form id="signup-form" class="space-y-6 hidden" onsubmit="event.preventDefault(); handleSignup();">
+                <div>
+                    <label for="signup-name" class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+                    <input type="text" id="signup-name" required class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-accent-blue focus:border-accent-blue transition duration-150">
+                </div>
+                <div>
+                    <label for="signup-email" class="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
+                    <input type="email" id="signup-email" required class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-accent-blue focus:border-accent-blue transition duration-150">
+                </div>
+                <div>
+                    <label for="signup-password" class="block text-sm font-medium text-gray-400 mb-1">Password (Min 6 characters)</label>
+                    <input type="password" id="signup-password" required class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-accent-blue focus:border-accent-blue transition duration-150">
+                </div>
+                <button type="submit" class="w-full btn-accent bg-accent-blue hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-bold">
+                    Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JavaScript for all Functionality -->
+    <script>
+        // ----------------------------------------------------
+        // 1. DUMMY PRODUCT DATA
+        // ----------------------------------------------------
+        const products = [
+            { id: 1, name: "Aero Drone Pro", price: 399.99, desc: "Ultra-stable flight, 4K camera.", image: "https://images.unsplash.com/photo-1662348316911-d6aef85f8560?q=80&w=1040&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/3b82f6/ffffff?text=Product+01", rating: 5 },
+            { id: 2, name: "Sonic Buds Max", price: 129.50, desc: "100 hours battery, crystal clear audio.", image: "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/ef4444/ffffff?text=Product+02", rating: 4 },
+            { id: 3, name: "Sentinel Smartwatch", price: 249.00, desc: "Always-on display, health monitoring.", image: "https://images.unsplash.com/photo-1670082379834-be7116cf7d70?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/10b981/ffffff?text=Product+03", rating: 4.5 },
+            { id: 4, name: "Apex Mechanical KB", price: 159.99, desc: "Tactile switches, customizable RGB.", image: "https://plus.unsplash.com/premium_photo-1686041335916-36cf4aae9661?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/f59e0b/ffffff?text=Product+04", rating: 5 },
+            // Additional Products for 'View All' Demo
+            { id: 5, name: "Fusion Mouse X", price: 75.00, desc: "Ergonomic design, high-DPI sensor.", image: "https://images.unsplash.com/photo-1697256936487-34c35c4ededa?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/7c3aed/ffffff?text=Product+05", rating: 4 },
+            { id: 6, name: "Aura Speaker Cube", price: 99.00, desc: "360° sound, portable and durable.", image: "https://plus.unsplash.com/premium_photo-1677159499898-b061fb5bd2d7?q=80&w=1064&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/06b6d4/ffffff?text=Product+06", rating: 4.5 },
+            { id: 7, name: "Quantum VR Headset", price: 599.00, desc: "Immersive virtual reality experience.", image: "https://images.unsplash.com/photo-1762691386073-fbcf5d8dad18?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/d946ef/ffffff?text=Product+07", rating: 5 },
+            { id: 8, name: "Smart Home Hub", price: 199.00, desc: "Control all your smart devices easily.", image: "https://plus.unsplash.com/premium_photo-1716824502184-f5f8816ed2ca?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/fbbf24/ffffff?text=Product+08", rating: 3.5 },
+            { id: 9, name: "I Phone 16", price: 500.00, desc: "Experience the power and elegance of iPhone 16 effortlessly.", image: "https://images.unsplash.com/photo-1589492477829-5e65395b66cc?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D/600x400/fbbf24/ffffff?text=Product+08", rating: 3.6 },
+        ];
+
+        // Global Cart State
+        let cart = []; 
+        const MAX_INITIAL_PRODUCTS = 8;
+        let productsDisplayed = MAX_INITIAL_PRODUCTS;
+
+        // ----------------------------------------------------
+        // 2. UI HELPERS (Modals and Messages)
+        // ----------------------------------------------------
+        
+        // Custom Message Box (Instead of alert())
+        function showMessageBox(message, type) {
+            let existingBox = document.getElementById('custom-message-box');
+            if (existingBox) { existingBox.remove(); }
+
+            const box = document.createElement('div');
+            box.id = 'custom-message-box';
+            
+            let bgColor = 'bg-accent-blue'; // default info
+            if (type === 'error') { bgColor = 'bg-red-600'; } 
+            else if (type === 'success') { bgColor = 'bg-green-600'; }
+            else if (type === 'info') { bgColor = 'bg-gray-600'; }
+
+            box.className = `fixed bottom-5 right-5 z-50 p-4 rounded-lg shadow-xl text-white ${bgColor} transition-all duration-300 transform translate-x-0 opacity-100`;
+            box.innerHTML = `
+                <div class="flex items-center">
+                    <p class="font-medium">${message}</p>
+                    <button onclick="document.getElementById('custom-message-box').remove()" class="ml-4 text-white hover:text-gray-200">
+                        &times;
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(box);
+
+            setTimeout(() => {
+                if (document.getElementById('custom-message-box')) {
+                    document.getElementById('custom-message-box').remove();
+                }
+            }, 4000);
+        }
+
+        // Cart Modal Toggle
+        function toggleCartModal(show) {
+            document.getElementById('cart-modal').classList.toggle('hidden', !show);
+            if (show) { updateCartModal(); } // Cart khulne par data refresh karein
+        }
+
+        // Auth Modal Toggle
+        function toggleAuthModal(show) {
+            document.getElementById('auth-modal').classList.toggle('hidden', !show);
+            // Default to login tab when opening
+            if (show) { showAuthForm('login'); }
+        }
+
+        // Auth Form Tabs Logic
+        function showAuthForm(formType) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const loginTab = document.getElementById('login-tab');
+            const signupTab = document.getElementById('signup-tab');
+            const authTitle = document.getElementById('auth-title');
+
+            if (formType === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTab.classList.add('border-accent-blue', 'text-accent-blue');
+                signupTab.classList.remove('border-accent-blue', 'text-accent-blue');
+                loginTab.classList.add('text-white');
+                signupTab.classList.remove('text-white');
+                authTitle.textContent = 'Login to Dashboard';
+
+            } else { // signup
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                signupTab.classList.add('border-accent-blue', 'text-accent-blue');
+                loginTab.classList.remove('border-accent-blue', 'text-accent-blue');
+                signupTab.classList.add('text-white');
+                loginTab.classList.remove('text-white');
+                authTitle.textContent = 'Create New Account';
+            }
+        }
+        
+        // Dummy Auth Handlers
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            showMessageBox(`Login successful for ${email}! (Dummy) - Authentication Successful! Please note: The full personalized dashboard functionality requires a live backend API connection..`, 'success');
+            toggleAuthModal(false);
+        }
+
+        function handleSignup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            showMessageBox(`Account created for ${name} (${email})! (Dummy) - Your account is ready! You may now proceed to log in.`, 'success');
+            toggleAuthModal(false);
+        }
+
+        // ----------------------------------------------------
+        // 3. PRODUCT RENDERING & SEARCH
+        // ----------------------------------------------------
+
+        // Function to create product card HTML
+        function createProductCard(product) {
+            return `
+                <div class="product-card bg-gray-800 p-6 rounded-xl shadow-2xl hover:shadow-accent-blue/30 transition duration-300 transform hover:scale-[1.02]">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg mb-4" onerror="this.onerror=null;this.src='https://placehold.co/600x400/4b5563/ffffff?text=Image+Missing';">
+                    <h3 class="text-2xl font-semibold text-white mb-2">${product.name}</h3>
+                    <p class="text-gray-400 mb-4">${product.desc}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-3xl font-bold text-accent-blue">$${product.price.toFixed(2)}</span>
+                        <button data-id="${product.id}" class="add-to-cart-btn bg-accent-blue text-white px-4 py-2 rounded-full font-medium hover:bg-blue-700 transition duration-150">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Main function to render products
+        function renderProducts(productList, limit = products.length) {
+            const container = document.getElementById('product-list');
+            container.innerHTML = '';
+            
+            const productsToShow = productList.slice(0, limit);
+            
+            productsToShow.forEach(product => {
+                container.innerHTML += createProductCard(product);
+            });
+
+            // Reattach event listeners to new buttons
+            attachAddToCartListeners();
+            
+            // Manage 'View All' button visibility
+            const viewAllBtn = document.getElementById('view-all-container');
+            if (limit >= products.length || productList.length <= MAX_INITIAL_PRODUCTS) {
+                 viewAllBtn.classList.add('hidden');
+            } else {
+                 viewAllBtn.classList.remove('hidden');
+            }
+        }
+        
+        // Function for 'View All Products'
+        function showAllProducts() {
+            productsDisplayed = products.length;
+            renderProducts(products, productsDisplayed);
+            showMessageBox('All products loaded!', 'info');
+        }
+
+        // Search System
+        function filterProducts() {
+            const desktopSearch = document.getElementById('search-input');
+            const mobileSearch = document.getElementById('search-input-mobile');
+            
+            const searchTerm = (desktopSearch?.value || mobileSearch?.value || '').toLowerCase().trim();
+
+            const filtered = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) || 
+                product.desc.toLowerCase().includes(searchTerm)
+            );
+            
+            // Render filtered products (no limit on search results)
+            renderProducts(filtered, filtered.length); 
+
+            // Hide the 'View All' button during search
+            document.getElementById('view-all-container').classList.add('hidden');
+            
+            if (filtered.length === 0) {
+                 document.getElementById('product-list').innerHTML = '<p class="text-center text-gray-500 py-10 w-full col-span-full">Sorry, no products found for that search term.</p>';
+            }
+        }
+
+        // ----------------------------------------------------
+        // 4. CART LOGIC
+        // ----------------------------------------------------
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id == productId);
+            const cartItem = cart.find(item => item.id == productId);
+
+            if (cartItem) {
+                cartItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            // Update UI elements
+            updateCartCount();
+            showMessageBox(`'${product.name}' Product successfully added to your cart!`, 'success');
+        }
+        
+        function updateCartCount() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalCount;
+        }
+
+        function changeQuantity(id, change) {
+            const item = cart.find(i => i.id == id);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id != id);
+                }
+            }
+            updateCartCount();
+            updateCartModal(); // Modal ko update karein
+        }
+        
+        function updateCartModal() {
+            const container = document.getElementById('cart-items-container');
+            const emptyMessage = document.getElementById('empty-cart-message');
+            const subtotalElement = document.getElementById('summary-subtotal');
+            const totalElement = document.getElementById('summary-total');
+            const countElement = document.getElementById('summary-count');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                emptyMessage.style.display = 'block';
+                subtotalElement.textContent = '$0.00';
+                totalElement.textContent = '$0.00';
+                countElement.textContent = '0';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+            
+            let subtotal = 0;
+            let totalItems = 0;
+            container.innerHTML = '';
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                totalItems += item.quantity;
+
+                const itemHtml = `
+                    <div class="flex items-center space-x-4 bg-gray-900 p-4 rounded-lg shadow-md">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md border border-gray-700">
+                        <div class="flex-grow">
+                            <h4 class="text-xl font-semibold text-white">${item.name}</h4>
+                            <p class="text-gray-400">Price: $${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeQuantity(${item.id}, -1)" class="bg-gray-700 text-white w-8 h-8 rounded-full hover:bg-red-600 transition">-</button>
+                            <span class="text-lg font-medium text-white">${item.quantity}</span>
+                            <button onclick="changeQuantity(${item.id}, 1)" class="bg-gray-700 text-white w-8 h-8 rounded-full hover:bg-green-600 transition">+</button>
+                        </div>
+                        <div class="text-right w-20">
+                            <span class="text-lg font-bold text-accent-blue">$${itemTotal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += itemHtml;
+            });
+
+            // Update Summary
+            subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+            totalElement.textContent = `$${subtotal.toFixed(2)}`; // Shipping is dummy FREE
+            countElement.textContent = totalItems;
+        }
+
+        // Event listener setup for dynamic buttons
+        function attachAddToCartListeners() {
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                // Remove previous listener to prevent duplication
+                button.replaceWith(button.cloneNode(true));
+            });
+            
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    addToCart(productId);
+                });
+            });
+        }
+
+        // ----------------------------------------------------
+        // 5. INITIALIZATION
+        // ----------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial product display (first 4 only)
+            renderProducts(products, MAX_INITIAL_PRODUCTS);
+            
+            // Mobile Menu Toggle
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.toggle('hidden');
+            });
+
+            // Set up search event listeners for both desktop and mobile
+            document.getElementById('search-input')?.addEventListener('keyup', filterProducts);
+            document.getElementById('search-input-mobile')?.addEventListener('keyup', filterProducts);
+        });
+
+    </script>
+</body>
+</html>
